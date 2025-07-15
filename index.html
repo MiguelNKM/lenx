@@ -1,613 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Len X</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-
-        #header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #header h1 {
-            margin: 0;
-        }
-
-        #openSidebar {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-
-        .sidebar button {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 18px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .sidebar button:hover {
-            color: #f1f1f1;
-        }
-
-        .sidebar .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
-
-        #content {
-            padding: 20px;
-            transition: margin-left .5s;
-        }
-
-        #chatContainer {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        #chatHistory {
-            height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        #userInput {
-            width: calc(100% - 110px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            resize: vertical;
-        }
-
-        #sendMessage,
-        #scrollToBottom,
-        #voiceRecord {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        #sendMessage:hover,
-        #scrollToBottom:hover,
-        #voiceRecord:hover {
-            background-color: #357abd;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 10px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        #chatList {
-            list-style-type: none;
-            padding: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        #chatList li {
-            cursor: pointer;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #chatList li:hover {
-            background-color: #f0f0f0;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .user-message {
-            background-color: rgb(141, 229, 162);
-        }
-
-        .ai-message {
-            background-color: rgb(86, 193, 228);
-        }
-
-        .message-content {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .message-content ul,
-        .message-content ol {
-            padding-left: 20px;
-        }
-
-        .deleteChat {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            color: #ff4d4d;
-        }
-
-        .deleteChat:hover {
-            color: #ff0000;
-        }
-
-        .speakerIcon {
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        #inputArea {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        #voiceRecord {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #voiceRecord:hover {
-            background-color: #357abd;
-        }
-
-        .recording {
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-    </style>
+    <title>Len X AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div id="sidebar" class="sidebar">
-        <h2><u>Menu</u></h2>
-        <button id="closeSidebar">Exit &times;</button>
-        <button id="startNewChat">Start New Chat</button>
-        <button id="openAbout">About</button>
-        <h3>Previous Chats</h3>
-        <ul id="chatList"></ul>
-    </div>
-
-    <div id="header">
-        <h1>Len X 😉</h1>
-        <button id="openSidebar">&#9776;</button>
-    </div>
-
-    <div id="loadingIndicator" class="loading-spinner" style="display: none;"></div>
-
-    <div id="content">
-        <div id="chatContainer">
-            <div id="chatHistory"></div>
-            <div id="inputArea">
-                <textarea id="userInput" placeholder="Type your message..."></textarea>
-                <button id="voiceRecord">🎤</button>
-                <button id="sendMessage">Send</button>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Len X</div>
+                <button class="close-sidebar"><i class="fas fa-times"></i></button>
             </div>
-            <button id="scrollToBottom">Scroll to Bottom</button>
-        </div>
+            <div class="sidebar-content">
+                <button id="newChatButton" class="btn btn-primary w-full"><i class="fas fa-plus mr-2"></i> New Chat</button>
+                <div class="mt-4">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Recent Chats</h3>
+                    <ul id="chatList" class="chat-list"></ul>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <button id="aboutButton" class="btn btn-outline w-full"><i class="fas fa-info-circle mr-2"></i> About</button>
+            </div>
+        </aside>
 
-        <!-- About Page Modal -->
+        <!-- Main Content -->
+        <main id="main">
+            <header class="header">
+                <button id="menuButton" class="btn btn-icon menu-button"><i class="fas fa-bars"></i></button>
+                <div class="header-title">
+                    <span>Len X 🫠</span>
+                    <span class="model-indicator">DeepSeek R1 + Mistral 7B</span>
+                </div>
+                <div class="header-actions">
+                    <button id="scrollToBottom" class="btn btn-icon" title="Scroll to bottom"><i class="fas fa-arrow-down"></i></button>
+                </div>
+            </header>
+
+            <div class="chat-container">
+                <div id="chatHistory" class="chat-history"></div>
+
+                <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <span class="ml-2">Thinking...</span>
+                </div>
+
+                <div class="input-container">
+                    <div id="voiceRecording" class="voice-recording" style="display: none;">
+                        <div class="pulse-dot"></div>
+                        <span>Listening...</span>
+                    </div>
+                    <div class="input-area">
+                        <textarea id="userInput" class="input-textarea" placeholder="Type your message..." rows="1"></textarea>
+                        <div class="input-buttons">
+                            <button id="voiceButton" class="btn btn-icon" title="Voice input"><i class="fas fa-microphone"></i></button>
+                            <button id="sendButton" class="btn btn-icon btn-primary" title="Send message"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- About Modal -->
         <div id="aboutModal" class="modal">
             <div class="modal-content">
-                <span class="close" id="closeAbout">&times;</span>
-                <h2>About Len X</h2>
-                <p>Len X is an advanced chatbot application developed by Miguel Nana Kobina Mantey, a 5th Grade student
-                    at The McCarthy Hill School Accra, Ghana.</p>
-                <p>Len X is designed to assist users with various tasks such as finding information, solving problems,
-                    and more. It uses the cutting-edge Gemini AI to provide quick, accurate answers and enhance user
-                    experience.</p>
-                <p>If you have any questions or feedback, feel free to reach out. Call on 0207880705 or 0247012111.</p>
-                <p>Version: 3.0</p>
-                <p>Date updated: 22 December 2023</p>
-                <img src='l.jpg' width="80px" height="100px" alt="Len X Logo">
+                <div class="modal-header">
+                    <h2>About Len X</h2>
+                    <button id="closeAbout" class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <p>Len X is an advanced AI chatbot application powered by DeepSeek R1, a state-of-the-art open-source language model.</p>
+                    <p class="mt-2">Developed by Miguel Nana Kobina Mantey, a 5th Grade student at The McCarthy Hill School in Accra, Ghana.</p>
+                    <div class="mt-4">
+                        <h3 class="font-medium">Features:</h3>
+                        <ul class="list-disc pl-5 mt-2">
+                            <li>Free AI-powered conversations</li>
+                            <li>Voice input capability</li>
+                            <li>Chat history management</li>
+                            <li>Markdown formatting support</li>
+                            <li>Responsive design</li>
+                        </ul>
+                    </div>
+                    <div class="mt-4">
+                        <p>For questions or feedback:</p>
+                        <p><i class="fas fa-phone mr-2"></i> 0207880705 or 0247012111</p>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <p>Version: 4.1</p>
+                        <p>Last updated: July 2024</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const API_KEY = 'AIzaSyAboaxcv2ppFcun6IX3GmL7CzbuHzBbPxw'; // Replace with your actual API key
-        let currentChatId = null;
-        let chatHistory = [];
-
-        // Sidebar functionality
-        document.getElementById('openSidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').style.width = '250px';
-            document.getElementById('content').style.marginLeft = '250px';
-        });
-
-        document.getElementById('closeSidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').style.width = '0';
-            document.getElementById('content').style.marginLeft = '0';
-        });
-
-        // About modal functionality
-        const aboutModal = document.getElementById('aboutModal');
-        document.getElementById('openAbout').addEventListener('click', () => {
-            aboutModal.style.display = 'block';
-        });
-
-        document.getElementById('closeAbout').addEventListener('click', () => {
-            aboutModal.style.display = 'none';
-        });
-
-        window.onclick = (event) => {
-            if (event.target == aboutModal) {
-                aboutModal.style.display = 'none';
-            }
-        };
-
-        // Chat functionality
-        const chatHistoryDiv = document.getElementById('chatHistory');
-        const userInput = document.getElementById('userInput');
-        const sendMessage = document.getElementById('sendMessage');
-        const scrollToBottom = document.getElementById('scrollToBottom');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const chatList = document.getElementById('chatList');
-        const voiceRecordButton = document.getElementById('voiceRecord');
-
-        sendMessage.addEventListener('click', handleUserInput);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleUserInput();
-            }
-        });
-
-        scrollToBottom.addEventListener('click', () => {
-            chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-        });
-
-        async function handleUserInput() {
-            const message = userInput.value.trim();
-            if (message) {
-                if (!currentChatId) {
-                    currentChatId = Date.now().toString();
-                    chatHistory = [];
-                }
-                appendMessage('User', message);
-                chatHistory.push({ role: 'user', content: message });
-                userInput.value = '';
-                loadingIndicator.style.display = 'block';
-                try {
-                    const response = await getAIResponse(chatHistory);
-                    appendMessage('Len X', response);
-                    chatHistory.push({ role: 'assistant', content: response });
-                    saveChatToLocalStorage();
-                    updateChatList();
-                } catch (error) {
-                    console.error('Error:', error);
-                    appendMessage('Len X', `Sorry, I encountered an error: ${error.message}`);
-                }
-                loadingIndicator.style.display = 'none';
-                chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-            }
-        }
-
-        function appendMessage(sender, message) {
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${sender === 'User' ? 'user-message' : 'ai-message'}`;
-            messageElement.innerHTML = `
-            <strong>${sender}:</strong>
-            <div class="message-content">${formatMessage(message)}</div>
-            ${sender === 'Len X' ? '<span class="speakerIcon" onclick="speakText(this)">🔊</span>' : ''}
-        `;
-            chatHistoryDiv.appendChild(messageElement);
-        }
-
-        function formatMessage(message) {
-            // Handle asterisks for bold text
-            message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-            // Handle lists
-            const lines = message.split('\n');
-            let formattedLines = [];
-            let inList = false;
-            let listType = '';
-
-            for (let line of lines) {
-                if (line.trim().startsWith('- ')) {
-                    if (!inList || listType !== 'ul') {
-                        if (inList) formattedLines.push('</ul>');
-                        formattedLines.push('<ul>');
-                        inList = true;
-                        listType = 'ul';
-                    }
-                    formattedLines.push(`<li>${line.trim().substring(2)}</li>`);
-                } else if (line.match(/^\d+\. /)) {
-                    if (!inList || listType !== 'ol') {
-                        if (inList) formattedLines.push('</ol>');
-                        formattedLines.push('<ol>');
-                        inList = true;
-                        listType = 'ol';
-                    }
-                    formattedLines.push(`<li>${line.trim().substring(line.indexOf(' ') + 1)}</li>`);
-                } else {
-                    if (inList) {
-                        formattedLines.push(listType === 'ul' ? '</ul>' : '</ol>');
-                        inList = false;
-                    }
-                    formattedLines.push(line);
-                }
-            }
-
-            if (inList) {
-                formattedLines.push(listType === 'ul' ? '</ul>' : '</ol>');
-            }
-
-            return formattedLines.join('\n');
-        }
-
-        async function getAIResponse(history) {
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: history.map(msg => ({
-                            role: msg.role === 'assistant' ? 'model' : 'user',
-                            parts: [{ text: msg.content }]
-                        })),
-                    }),
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`API error: ${errorData.error.message}`);
-                }
-
-                const data = await response.json();
-                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    throw new Error('Unexpected response structure from Gemini AI');
-                }
-            } catch (error) {
-                console.error('Error calling Gemini AI:', error);
-                throw error;
-            }
-        }
-
-        function saveChatToLocalStorage() {
-            const chats = JSON.parse(localStorage.getItem('chats') || '{}');
-            chats[currentChatId] = {
-                history: chatHistory,
-                name: getChatName(chatHistory),
-                timestamp: Date.now()
-            };
-            localStorage.setItem('chats', JSON.stringify(chats));
-        }
-
-        function getChatName(history) {
-            const firstUserMessage = history.find(msg => msg.role === 'user');
-            if (firstUserMessage) {
-                return firstUserMessage.content.split('\n')[0].substring(0, 30) + '...';
-            }
-            return 'New Chat';
-        }
-
-        function updateChatList() {
-            const chats = JSON.parse(localStorage.getItem('chats') || '{}');
-            chatList.innerHTML = '';
-            Object.entries(chats)
-                .sort(([, a], [, b]) => b.timestamp - a.timestamp)
-                .forEach(([chatId, chat]) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                    <span>${chat.name || `Chat ${chatId}`}</span>
-                    <button class="deleteChat" data-chat-id="${chatId}">🗑️</button>
-                `;
-                    li.querySelector('span').addEventListener('click', () => loadChat(chatId));
-                    li.querySelector('.deleteChat').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteChat(chatId);
-                    });
-                    chatList.appendChild(li);
-                });
-        }
-
-        function loadChat(chatId) {
-            currentChatId = chatId;
-            const chats = JSON.parse(localStorage.getItem('chats') || '{}');
-            chatHistory = chats[chatId].history || [];
-            chatHistoryDiv.innerHTML = '';
-            chatHistory.forEach(msg => appendMessage(msg.role === 'user' ? 'User' : 'Len X', msg.content));
-            chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-        }
-
-        function deleteChat(chatId) {
-            const chats = JSON.parse(localStorage.getItem('chats') || '{}');
-            delete chats[chatId];
-            localStorage.setItem('chats', JSON.stringify(chats));
-            updateChatList();
-            if (currentChatId === chatId) {
-                currentChatId = null;
-                chatHistory = [];
-                chatHistoryDiv.innerHTML = '';
-            }
-        }
-
-        // Voice recording functionality
-        let recognition;
-        if ('webkitSpeechRecognition' in window) {
-            recognition = new webkitSpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-US';
-
-            recognition.onresult = function (event) {
-                const transcript = event.results[0][0].transcript;
-                userInput.value += transcript;
-            };
-
-            recognition.onerror = function (event) {
-                console.error('Speech recognition error:', event.error);
-                voiceRecordButton.classList.remove('recording');
-            };
-
-            recognition.onend = function () {
-                voiceRecordButton.classList.remove('recording');
-            };
-        }
-
-        voiceRecordButton.addEventListener('click', function () {
-            if (recognition) {
-                if (voiceRecordButton.classList.contains('recording')) {
-                    recognition.stop();
-                } else {
-                    recognition.start();
-                    voiceRecordButton.classList.add('recording');
-                }
-            } else {
-                alert('Speech recognition is not supported in your browser.');
-            }
-        });
-
-        // Text-to-speech functionality
-        function speakText(element) {
-            const textToSpeak = element.previousElementSibling.textContent;
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            speechSynthesis.speak(utterance);
-        }
-
-        // New chat functionality
-        document.getElementById('startNewChat').addEventListener('click', () => {
-            currentChatId = null;
-            chatHistory = [];
-            chatHistoryDiv.innerHTML = '';
-            userInput.value = '';
-        });
-
-        // Initialize
-        updateChatList();
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>
